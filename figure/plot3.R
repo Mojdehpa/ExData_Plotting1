@@ -1,0 +1,23 @@
+#====reading file============= (coded in windows)
+setInternet2(TRUE)
+fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileUrl, "household_power_consumption.zip")
+data <- read.table(unz("household_power_consumption.zip","household_power_consumption.txt"),sep = ";", header = FALSE, skip =1)
+names(data) = c("Date","Time","Global_active_power","Global_reactive_power","Voltage","Global_intensity","Sub_metering_1","Sub_metering_2","Sub_metering_3")
+data1 <-subset(data,data$Date =="1/2/2007" |data$Date == "2/2/2007")
+data1$Global_active_power <- as.numeric(as.character(data1$Global_active_power))
+data1$Sub_metering_1 <- as.numeric(as.character(data1$Sub_metering_1))
+data1$Sub_metering_2 <- as.numeric(as.character(data1$Sub_metering_2))
+data1$Sub_metering_3 <- as.numeric(as.character(data1$Sub_metering_3))
+x <- paste(data1$Date, data1$Time)
+Date_Time <- strptime(x,"%d/%m/%Y %H:%M:%S")
+#========creating plot 3===================
+dev.set(3)
+png(file ="plot3.png", width=480, height=480)
+with(data1, {
+  plot(Date_Time,Sub_metering_1, type="l", xlab = "" , ylab = "Energy sub metering", col = "black")
+  points(Date_Time,Sub_metering_2, type="l", col = "red")
+  points(Date_Time,Sub_metering_3, type="l", col = "blue")
+  legend("topright",lty = c(1,1,1) ,col = c("black", "red", "blue"), legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+})
+dev.off()
